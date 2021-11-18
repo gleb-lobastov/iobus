@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import iobus from "./iobus";
-import { ConnectOptions } from "./iobus.interface";
+import yabus from "./yabus";
+import { ConnectOptions } from "./yabus.interface";
 
 interface TestState {
   never?: true;
@@ -21,7 +21,7 @@ afterEach(() => {
   postMessageSpy.mockRestore();
 });
 
-describe("single iobus instance", () => {
+describe("single yabus instance", () => {
   it("should initialize, update and disconnect properly", async () => {
     expect.assertions(9);
 
@@ -30,7 +30,7 @@ describe("single iobus instance", () => {
     const updates = { testPropNum: 2 };
     const onUpdate = jest.fn();
     const onError = jest.fn();
-    const iobusConnection = iobus<TestState>({
+    const iobusConnection = yabus<TestState>({
       initialState,
       channelKey,
       onUpdate,
@@ -59,7 +59,7 @@ describe("single iobus instance", () => {
   });
 });
 
-describe("two iobus instances", () => {
+describe("two yabus instances", () => {
   it("should acknowledge and sync newbie", async () => {
     expect.assertions(9);
 
@@ -68,14 +68,14 @@ describe("two iobus instances", () => {
     const updates = { testPropNum: 2 };
     const onUpdateNewbie = jest.fn();
     const onErrorNewbie = jest.fn();
-    const iobusConnectionOldie = iobus<TestState>({
+    const iobusConnectionOldie = yabus<TestState>({
       initialState,
       channelKey,
       onUpdate: jest.fn(),
       onError: jest.fn(),
     });
 
-    const iobusConnectionNewbie = iobus<TestState>({
+    const iobusConnectionNewbie = yabus<TestState>({
       channelKey,
       onUpdate: onUpdateNewbie,
       onError: onErrorNewbie,
@@ -119,7 +119,7 @@ describe("two iobus instances", () => {
 
     const onUpdateOldie = jest.fn();
     const onErrorOldie = jest.fn();
-    const iobusConnectionOldie = iobus<TestState>({
+    const iobusConnectionOldie = yabus<TestState>({
       channelKey,
       onUpdate: onUpdateOldie,
       onError: onErrorOldie,
@@ -127,7 +127,7 @@ describe("two iobus instances", () => {
 
     const onUpdateNewbie = jest.fn();
     const onErrorNewbie = jest.fn();
-    iobus<TestState>({
+    yabus<TestState>({
       channelKey,
       initialState,
       onUpdate: onUpdateNewbie,
@@ -154,13 +154,13 @@ describe("two iobus instances", () => {
     const oldieUpdates = { testPropNum: 2 };
     const newbieUpdate = { testPropStr: "breaking change" };
 
-    const iobusConnectionOldie = iobus<TestState>({
+    const iobusConnectionOldie = yabus<TestState>({
       channelKey,
       initialState,
       onUpdate: jest.fn(),
       onError: jest.fn(),
     });
-    const iobusConnectionNewbie = iobus<TestState>({
+    const iobusConnectionNewbie = yabus<TestState>({
       channelKey,
       initialState,
       onUpdate: jest.fn(),
@@ -198,7 +198,7 @@ describe("two iobus instances", () => {
   });
 });
 
-describe("iobus instances pool", () => {
+describe("yabus instances pool", () => {
   it("should work", async () => {
     const poolSize = 10; // >= 8
     expect.assertions(poolSize * 4);
@@ -220,7 +220,7 @@ describe("iobus instances pool", () => {
       never: true,
     };
     poolOptions[5].initialState = initialState;
-    const pool = poolOptions.map(iobus);
+    const pool = poolOptions.map(yabus);
 
     await delay();
 

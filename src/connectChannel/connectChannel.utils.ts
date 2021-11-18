@@ -1,4 +1,4 @@
-import { EventType } from "../iobus.interface";
+import { EventType } from "../yabus.interface";
 import { BaseEventData } from "./connectChannel.interface";
 
 export function listen(handler: (event: MessageEvent) => void) {

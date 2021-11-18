@@ -4,7 +4,7 @@ import {
   isMessageBelongsToChannel,
   isValidEventType,
 } from "./connectChannel.utils";
-import { EventType } from "../iobus.interface";
+import { EventType } from "../yabus.interface";
 
 describe("isMessageBelongsToChannel", () => {
   it("should return true if message belongs to channel", () => {

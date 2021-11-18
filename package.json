@@ -1,12 +1,12 @@
 {
-  "name": "iobus",
+  "name": "yabus",
   "version": "0.0.1",
   "description": "synchronize state between anything (app, iframes, browser extensions, etc.) in browser javascript/typescript app",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "types": "lib/types/index.d.ts",
   "files": [
-    "./lib"
+    "lib"
   ],
   "scripts": {
     "test": "jest",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gleb-lobastov/iobus.git"
+    "url": "git+https://github.com/gleb-lobastov/yabus.git"
   },
   "keywords": [
     "sync",
@@ -29,9 +29,9 @@
   "author": "Gleb Lobastov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gleb-lobastov/iobus/issues"
+    "url": "https://github.com/gleb-lobastov/yabus/issues"
   },
-  "homepage": "https://github.com/gleb-lobastov/iobus#readme",
+  "homepage": "https://github.com/gleb-lobastov/yabus#readme",
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",

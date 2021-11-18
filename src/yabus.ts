@@ -9,11 +9,11 @@ import {
   StatefulEventData,
   SyncEventData,
   UpdateEventData,
-} from "./iobus.interface";
+} from "./yabus.interface";
 
-const DEFAULT_CHANNEL = "@@iobus";
+const DEFAULT_CHANNEL = "@@yabus";
 
-export default function iobus<State>({
+export default function yabus<State>({
   channelKey = DEFAULT_CHANNEL,
   initialState,
   onUpdate,
@@ -161,3 +161,5 @@ export default function iobus<State>({
     onUpdate({ state, updates: payload.updates });
   }
 }
+
+yabus.EventType = EventType;

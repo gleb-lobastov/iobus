@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { EventType } from "../iobus.interface";
+import { EventType } from "../yabus.interface";
 import connectChannel from "./connectChannel";
 
 describe("createChannel", () => {

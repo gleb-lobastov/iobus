@@ -1,5 +1,5 @@
 import uniqId from "./utils/uniqId";
-import createStore from "./createStore/createStore";
+import createStore from "./createStore";
 import connectChannel from "./connectChannel";
 import {
   AcknowledgeEventData,

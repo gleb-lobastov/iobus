@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib/cjs",
+  },
+  "extends": "./tsconfig.json",
+  "exclude": ["./**/*.spec.ts"]
+}

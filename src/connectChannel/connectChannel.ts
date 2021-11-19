@@ -38,7 +38,7 @@ export default function connectChannel<EventData extends BaseEventData>(
 
   function broadcast(eventData: EventData) {
     if (!connected) {
-      onError(`channel "${channelKey}" is not in sync`);
+      onError?.(`channel "${channelKey}" is not in sync`);
     }
     window.postMessage(stringifyEvent<EventData>(channelKey, eventData), "*");
   }

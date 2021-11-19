@@ -7,7 +7,7 @@ export interface BaseEventData {
 export interface ChannelOptions<EventData extends BaseEventData> {
   channelKey: string;
   onEvent: (eventData: EventData) => void;
-  onError: (error: Error | string) => void;
+  onError?: (error: Error | string) => void;
 }
 
 export interface Channel<EventData extends BaseEventData> {

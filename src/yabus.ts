@@ -53,16 +53,16 @@ export default function yabus<State>({
 
   function update(updates: Partial<State>): boolean {
     if (!channel.connected) {
-      onError(`channel "${channelKey}" is disconnected`);
+      onError?.(`channel "${channelKey}" is disconnected`);
       return false;
     }
     if (!store.syncedState) {
-      onError(`store "${channelKey}" is not yet in sync`);
+      onError?.(`store "${channelKey}" is not yet in sync`);
       return false;
     }
     const { updated, state: nextState } = store.update(updates);
     if (!updated || !nextState) {
-      onError(`couldn't read state in channel "${channelKey}"`);
+      onError?.(`couldn't read state in channel "${channelKey}"`);
       return false;
     }
     channel.broadcast({

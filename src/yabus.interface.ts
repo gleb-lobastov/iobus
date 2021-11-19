@@ -5,7 +5,7 @@ export interface ConnectOptions<State> {
   channelKey?: string;
   initialState?: State;
   onUpdate: (payload: UpdateEventPayload<State>) => void;
-  onError: (error: Error | string) => void;
+  onError?: (error: Error | string) => void;
 }
 
 export interface IobusConnection<State> {

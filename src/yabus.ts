@@ -5,7 +5,7 @@ import {
   AcknowledgeEventData,
   ConnectOptions,
   EventType,
-  IobusConnection,
+  YabusConnection,
   StatefulEventData,
   SyncEventData,
   UpdateEventData,
@@ -13,15 +13,16 @@ import {
 
 const DEFAULT_CHANNEL = "@@yabus";
 
-export default function yabus<State>({
+export default function yabus<State, Updates = Partial<State>>({
   channelKey = DEFAULT_CHANNEL,
   initialState,
   onUpdate,
   onError,
-}: ConnectOptions<State>): IobusConnection<State> {
+  mergeStrategy,
+}: ConnectOptions<State, Updates> = {}): YabusConnection<State, Updates> {
   const peerId = uniqId("peer");
-  const store = createStore<State>(initialState);
-  const channel = connectChannel<StatefulEventData<State>>({
+  const store = createStore<State, Updates>({ initialState, mergeStrategy });
+  const channel = connectChannel<StatefulEventData<State, Updates>>({
     channelKey,
     onEvent: handleEvent,
     onError,
@@ -51,7 +52,7 @@ export default function yabus<State>({
     },
   };
 
-  function update(updates: Partial<State>): boolean {
+  function update(updates: Updates): boolean {
     if (!channel.connected) {
       onError?.(`channel "${channelKey}" is disconnected`);
       return false;
@@ -80,13 +81,13 @@ export default function yabus<State>({
   function reset(toState: State) {
     channel.broadcast({
       eventType: EventType.RESET,
-      payload: { state: toState, updates: toState },
+      payload: { state: toState },
       sourcePeerId: peerId,
       targetPeerId: "*",
     });
   }
 
-  function handleEvent(eventData: StatefulEventData<State>) {
+  function handleEvent(eventData: StatefulEventData<State, Updates>) {
     const { eventType, sourcePeerId } = eventData;
 
     const selfEmitted = sourcePeerId === peerId;
@@ -148,7 +149,7 @@ export default function yabus<State>({
     }
   }
 
-  function handleUpdate(eventData: UpdateEventData<State>) {
+  function handleUpdate(eventData: UpdateEventData<State, Updates>) {
     const { payload } = eventData;
     if (!payload.updates) {
       return;

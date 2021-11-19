@@ -1,4 +1,6 @@
 import createStore from "./createStore";
+import { MergeStrategy } from "./createStore.interface";
+
 describe("createStore", () => {
   it("should hold null instead of state until synced", () => {
     const store = createStore();
@@ -50,5 +52,34 @@ describe("createStore", () => {
     expect(updated).toBe(true);
     expect(state).toEqual({ ...testInitialState, ...testUpdate });
     expect(store.syncedState).toEqual({ ...testInitialState, ...testUpdate });
+  });
+
+  it("should use arbitrary merge strategy", function () {
+    type State = Record<string, { flag: boolean }>;
+    type Updates = Record<keyof State, boolean>;
+    const mergeStrategy = <MergeStrategy<State, Updates>>(
+      function mergeStrategy(state, updates) {
+        return Object.entries(updates).reduce(
+          (acc, [key, value]) => {
+            acc[key] = { ...acc[key] };
+            acc[key].flag = value;
+            return acc;
+          },
+          { ...state }
+        );
+      }
+    );
+    const initialState = {
+      valueA: { flag: false },
+      valueB: { flag: true },
+    };
+
+    const store = createStore<State, Updates>({ initialState, mergeStrategy });
+    store.update({ valueA: true, valueC: true });
+    expect(store.syncedState).toEqual({
+      valueA: { flag: true },
+      valueB: { flag: true },
+      valueC: { flag: true },
+    });
   });
 });

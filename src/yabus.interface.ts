@@ -1,17 +1,18 @@
 import { BaseEventData } from "./connectChannel";
-import { StateVariable } from "./createStore";
+import { StateVariable, MergeStrategy } from "./createStore";
 
-export interface ConnectOptions<State> {
+export interface ConnectOptions<State, Updates> {
   channelKey?: string;
   initialState?: State;
   onUpdate?: (payload: UpdateEventPayload<State, Updates>) => void;
   onError?: (error: Error | string) => void;
+  mergeStrategy?: MergeStrategy<State, Updates>;
 }
 
-export interface IobusConnection<State> {
+export interface YabusConnection<State, Updates> {
   connected: boolean;
   state: StateVariable<State>;
-  update: (updates: Partial<State>) => boolean;
+  update: (updates: Updates) => boolean;
   reset: (toState: State) => void;
   disconnect: () => void;
 }
@@ -29,9 +30,9 @@ export interface SyncEventPayload<State> {
   state: State;
 }
 
-export interface UpdateEventPayload<State> {
+export interface UpdateEventPayload<State, Updates> {
   state: State;
-  updates: Partial<State> | null;
+  updates: Updates | null;
 }
 
 export interface AcknowledgeEventData extends BaseEventData {
@@ -45,12 +46,12 @@ export interface SyncEventData<State> extends BaseEventData {
   payload: SyncEventPayload<State>;
 }
 
-export interface UpdateEventData<State> extends BaseEventData {
+export interface UpdateEventData<State, Updates> extends BaseEventData {
   eventType: EventType.UPDATE;
-  payload: UpdateEventPayload<State>;
+  payload: UpdateEventPayload<State, Updates>;
 }
 
-export type StatefulEventData<State> =
+export type StatefulEventData<State, Updates> =
   | AcknowledgeEventData
   | SyncEventData<State>
-  | UpdateEventData<State>;
+  | UpdateEventData<State, Updates>;

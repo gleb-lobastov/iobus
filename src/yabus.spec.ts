@@ -89,7 +89,7 @@ describe("two yabus instances", () => {
     expect(onErrorNewbie).not.toBeCalled();
     expect(onUpdateNewbie).toBeCalledWith({
       state: initialState,
-      updates: initialState,
+      updates: null,
     });
 
     const success = iobusConnectionOldie.update(updates);
@@ -140,7 +140,7 @@ describe("two yabus instances", () => {
     expect(onErrorOldie).not.toBeCalled();
     expect(onUpdateOldie).toBeCalledWith({
       state: initialState,
-      updates: initialState,
+      updates: null,
     });
     expect(onUpdateNewbie).not.toBeCalled();
     expect(onErrorNewbie).not.toBeCalled();
@@ -212,7 +212,7 @@ describe("yabus instances pool", () => {
       channelKey,
       onUpdate: jest.fn(),
       onError: jest.fn(),
-    })) as unknown as ConnectOptions<TestState>[];
+    })) as unknown as ConnectOptions<TestState, Partial<TestState>>[];
 
     poolOptions[2].initialState = {
       testPropNum: -1,

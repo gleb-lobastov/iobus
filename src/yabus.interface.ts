@@ -4,7 +4,7 @@ import { StateVariable } from "./createStore";
 export interface ConnectOptions<State> {
   channelKey?: string;
   initialState?: State;
-  onUpdate: (payload: UpdateEventPayload<State>) => void;
+  onUpdate?: (payload: UpdateEventPayload<State, Updates>) => void;
   onError?: (error: Error | string) => void;
 }
 

@@ -143,8 +143,8 @@ export default function yabus<State>({
     if (!updated || !state) {
       return;
     }
-    if (!selfEmitted) {
-      onUpdate({ state, updates: state });
+    if (!selfEmitted && onUpdate) {
+      onUpdate({ state, updates: null });
     }
   }
 
@@ -158,7 +158,7 @@ export default function yabus<State>({
     if (!updated || !state) {
       return;
     }
-    onUpdate({ state, updates: payload.updates });
+    onUpdate?.({ state, updates: payload.updates });
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "yabus",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "synchronize state between anything (app, iframes, browser extensions, etc.) in browser javascript/typescript app",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",

@@ -42,6 +42,23 @@ describe("createChannel", () => {
     expect(onOtherChannelEvent).not.toBeCalled();
     expect(onOtherChannelError).not.toBeCalled();
   });
+
+  it("should not fail when use special characters in channelKey", async () => {
+    const channelKey = "!@#$%^&*()_-+=<>,.?/\"'|\\{}[]`~:;";
+    const onEvent = jest.fn();
+    const onError = jest.fn();
+    const eventData = {
+      eventType: EventType.ACKNOWLEDGE,
+      sourcePeerId: "testSourcePeerId",
+    };
+
+    connectChannel({ channelKey, onEvent, onError }).broadcast(eventData);
+
+    await delay();
+
+    expect(onError).not.toBeCalled();
+    expect(onEvent).toBeCalledWith(eventData);
+  });
 });
 
 function delay(timeout = 0) {

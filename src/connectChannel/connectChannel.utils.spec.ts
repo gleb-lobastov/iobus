@@ -1,29 +1,29 @@
 import {
   stringifyEvent,
   parseEvent,
-  isMessageBelongsToChannel,
+  resolveChannelMessage,
   isValidEventType,
 } from "./connectChannel.utils";
 import { EventType } from "../yabus.interface";
 
-describe("isMessageBelongsToChannel", () => {
+describe("resolveChannelMessage", () => {
   it("should return true if message belongs to channel", () => {
     const testChannelKey = "testChannelKey";
     expect(
-      isMessageBelongsToChannel(
+      resolveChannelMessage(
         `${testChannelKey}@whatever:whatsoever`,
         testChannelKey
       )
-    ).toBe(true);
+    ).toBe("whatever:whatsoever");
   });
 
   it("should return false if message not belongs to channel", () => {
     expect(
-      isMessageBelongsToChannel(
+      resolveChannelMessage(
         `otherChannelKey@whatever:whatsoever`,
         "testChannelKey"
       )
-    ).toBe(false);
+    ).toBeNull();
   });
 });
 

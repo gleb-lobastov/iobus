@@ -15,17 +15,13 @@ export function parseEvent<EventData extends BaseEventData>(
   message: string,
   onError?: (message: string) => void
 ): EventData | null {
-  if (!isMessageBelongsToChannel(message, channelKey)) {
+  const channelMessage = resolveChannelMessage(message, channelKey);
+  if (!channelMessage) {
     return null;
   }
 
   // split only on first occurrence of delimiter ":", https://stackoverflow.com/a/4607799
-  const [channelAndEventType, eventPayloadStr] = message.split(/:(.+)/);
-  const [eventChannelKey, eventType] = channelAndEventType.split("@");
-
-  if (eventChannelKey !== channelKey) {
-    return null;
-  }
+  const [eventType, eventPayloadStr] = channelMessage.split(/:(.+)/);
 
   if (!isValidEventType(eventType)) {
     onError?.(`invalid eventType "${eventType}" in channel "${channelKey}"`);
@@ -53,6 +49,9 @@ export function isValidEventType(eventType: string): boolean {
   return options.includes(eventType);
 }
 
-export function isMessageBelongsToChannel(message: string, channel: string) {
-  return message.startsWith(channel);
+export function resolveChannelMessage(message: string, channelKey: string) {
+  if (message.startsWith(`${channelKey}@`)) {
+    return message.slice(channelKey.length + 1);
+  }
+  return null;
 }

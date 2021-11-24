@@ -1,4 +1,4 @@
-import { BaseEventData } from "./connectChannel";
+import { BaseEventData, LowLevelStrategy } from "./connectChannel";
 import { StateVariable, MergeStrategy } from "./createStore";
 
 export interface ConnectOptions<State, Updates> {
@@ -7,6 +7,7 @@ export interface ConnectOptions<State, Updates> {
   onUpdate?: (payload: UpdateEventPayload<State, Updates>) => void;
   onError?: (error: Error | string) => void;
   mergeStrategy?: MergeStrategy<State, Updates>;
+  lowLevelStrategy?: LowLevelStrategy;
 }
 
 export interface YabusConnection<State, Updates> {

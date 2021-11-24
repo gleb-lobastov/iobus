@@ -19,6 +19,7 @@ export default function yabus<State, Updates = Partial<State>>({
   onUpdate,
   onError,
   mergeStrategy,
+  lowLevelStrategy,
 }: ConnectOptions<State, Updates> = {}): YabusConnection<State, Updates> {
   const peerId = uniqId("peer");
   const store = createStore<State, Updates>({ initialState, mergeStrategy });
@@ -26,6 +27,7 @@ export default function yabus<State, Updates = Partial<State>>({
     channelKey,
     onEvent: handleEvent,
     onError,
+    lowLevelStrategy,
   });
 
   if (initialState) {

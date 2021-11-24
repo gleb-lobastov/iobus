@@ -1,18 +1,20 @@
-import { stringifyEvent, parseEvent, listen } from "./connectChannel.utils";
+import { stringifyEvent, parseEvent } from "./connectChannel.utils";
+import defaultLowLevelStrategy from "./defaultLowLevelStrategy";
 import {
   ChannelOptions,
   Channel,
   BaseEventData,
 } from "./connectChannel.interface";
 
-export default function connectChannel<EventData extends BaseEventData>(
-  channelOptions: ChannelOptions<EventData>
-): Channel<EventData> {
+export default function connectChannel<EventData extends BaseEventData>({
+  channelKey,
+  onEvent,
+  onError,
+  lowLevelStrategy = defaultLowLevelStrategy,
+}: ChannelOptions<EventData>): Channel<EventData> {
   let connected = true;
 
-  const { channelKey, onEvent, onError } = channelOptions;
-
-  const unlisten = listen(handleEvent);
+  const unlisten = lowLevelStrategy.listen(handleEvent);
 
   return {
     get connected() {
@@ -40,6 +42,8 @@ export default function connectChannel<EventData extends BaseEventData>(
     if (!connected) {
       onError?.(`channel "${channelKey}" is not in sync`);
     }
-    window.postMessage(stringifyEvent<EventData>(channelKey, eventData), "*");
+    lowLevelStrategy.broadcast(
+      stringifyEvent<EventData>(channelKey, eventData)
+    );
   }
 }

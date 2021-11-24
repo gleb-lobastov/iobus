@@ -1,11 +1,6 @@
 import { EventType } from "../yabus.interface";
 import { BaseEventData } from "./connectChannel.interface";
 
-export function listen(handler: (event: MessageEvent) => void) {
-  window.addEventListener("message", handler);
-  return () => window.removeEventListener("message", handler);
-}
-
 export function stringifyEvent<EventData extends BaseEventData>(
   channelKey: string,
   eventData: EventData

@@ -30,32 +30,32 @@ describe("single yabus instance", () => {
     const updates = { testPropNum: 2 };
     const onUpdate = jest.fn();
     const onError = jest.fn();
-    const iobusConnection = yabus<TestState>({
+    const yabusConnection = yabus<TestState>({
       initialState,
       channelKey,
       onUpdate,
       onError,
     });
 
-    expect(iobusConnection.connected).toBe(true);
+    expect(yabusConnection.connected).toBe(true);
 
     await delay();
 
-    expect(iobusConnection.state).toEqual(initialState);
+    expect(yabusConnection.state).toEqual(initialState);
     expect(onError).not.toBeCalled();
     expect(onUpdate).not.toBeCalled(); // ignore own events
 
-    const success = iobusConnection.update(updates);
+    const success = yabusConnection.update(updates);
     expect(success).toBe(true);
 
     await delay();
 
-    expect(iobusConnection.state).toEqual({ ...initialState, ...updates });
+    expect(yabusConnection.state).toEqual({ ...initialState, ...updates });
     expect(onError).not.toBeCalled();
-    expect(onUpdate).not.toBeCalled(); // ignore own events
+    expect(onUpdate).not.toBeCalled(); // ignore own events by default
 
-    iobusConnection.disconnect();
-    expect(iobusConnection.connected).toBe(false);
+    yabusConnection.disconnect();
+    expect(yabusConnection.connected).toBe(false);
   });
 });
 
@@ -68,36 +68,36 @@ describe("two yabus instances", () => {
     const updates = { testPropNum: 2 };
     const onUpdateNewbie = jest.fn();
     const onErrorNewbie = jest.fn();
-    const iobusConnectionOldie = yabus<TestState>({
+    const yabusConnectionOldie = yabus<TestState>({
       initialState,
       channelKey,
       onUpdate: jest.fn(),
       onError: jest.fn(),
     });
 
-    const iobusConnectionNewbie = yabus<TestState>({
+    const yabusConnectionNewbie = yabus<TestState>({
       channelKey,
       onUpdate: onUpdateNewbie,
       onError: onErrorNewbie,
     });
 
-    expect(iobusConnectionNewbie.connected).toBe(true);
+    expect(yabusConnectionNewbie.connected).toBe(true);
 
     await delay();
 
-    expect(iobusConnectionNewbie.state).toEqual(initialState);
+    expect(yabusConnectionNewbie.state).toEqual(initialState);
     expect(onErrorNewbie).not.toBeCalled();
     expect(onUpdateNewbie).toBeCalledWith({
       state: initialState,
       updates: null,
     });
 
-    const success = iobusConnectionOldie.update(updates);
+    const success = yabusConnectionOldie.update(updates);
     expect(success).toBe(true);
 
     await delay();
 
-    expect(iobusConnectionNewbie.state).toEqual({
+    expect(yabusConnectionNewbie.state).toEqual({
       ...initialState,
       ...updates,
     });
@@ -107,8 +107,8 @@ describe("two yabus instances", () => {
       updates,
     });
 
-    iobusConnectionNewbie.disconnect();
-    expect(iobusConnectionNewbie.connected).toBe(false);
+    yabusConnectionNewbie.disconnect();
+    expect(yabusConnectionNewbie.connected).toBe(false);
   });
 
   it("should sync oldie, when newbie comes with initial state", async () => {
@@ -119,7 +119,7 @@ describe("two yabus instances", () => {
 
     const onUpdateOldie = jest.fn();
     const onErrorOldie = jest.fn();
-    const iobusConnectionOldie = yabus<TestState>({
+    const yabusConnectionOldie = yabus<TestState>({
       channelKey,
       onUpdate: onUpdateOldie,
       onError: onErrorOldie,
@@ -136,7 +136,7 @@ describe("two yabus instances", () => {
 
     await delay();
 
-    expect(iobusConnectionOldie.state).toEqual(initialState);
+    expect(yabusConnectionOldie.state).toEqual(initialState);
     expect(onErrorOldie).not.toBeCalled();
     expect(onUpdateOldie).toBeCalledWith({
       state: initialState,
@@ -154,13 +154,13 @@ describe("two yabus instances", () => {
     const oldieUpdates = { testPropNum: 2 };
     const newbieUpdate = { testPropStr: "breaking change" };
 
-    const iobusConnectionOldie = yabus<TestState>({
+    const yabusConnectionOldie = yabus<TestState>({
       channelKey,
       initialState,
       onUpdate: jest.fn(),
       onError: jest.fn(),
     });
-    const iobusConnectionNewbie = yabus<TestState>({
+    const yabusConnectionNewbie = yabus<TestState>({
       channelKey,
       initialState,
       onUpdate: jest.fn(),
@@ -169,32 +169,32 @@ describe("two yabus instances", () => {
 
     await delay();
 
-    iobusConnectionOldie.update(oldieUpdates);
+    yabusConnectionOldie.update(oldieUpdates);
 
     await delay();
 
-    iobusConnectionNewbie.update(newbieUpdate);
+    yabusConnectionNewbie.update(newbieUpdate);
 
     await delay();
 
-    expect(iobusConnectionOldie.state).toEqual({
+    expect(yabusConnectionOldie.state).toEqual({
       ...initialState,
       ...oldieUpdates,
       ...newbieUpdate,
     });
-    expect(iobusConnectionNewbie.state).toEqual({
+    expect(yabusConnectionNewbie.state).toEqual({
       ...initialState,
       ...oldieUpdates,
       ...newbieUpdate,
     });
 
     const resetState = { testPropNum: 3, testPropStr: "brand new" };
-    iobusConnectionOldie.reset(resetState);
+    yabusConnectionOldie.reset(resetState);
 
     await delay();
 
-    expect(iobusConnectionOldie.state).toEqual(resetState);
-    expect(iobusConnectionNewbie.state).toEqual(resetState);
+    expect(yabusConnectionOldie.state).toEqual(resetState);
+    expect(yabusConnectionNewbie.state).toEqual(resetState);
   });
 });
 
@@ -224,8 +224,8 @@ describe("yabus instances pool", () => {
 
     await delay();
 
-    pool.forEach((iobusConnection) => {
-      expect(iobusConnection.state).toEqual(initialState);
+    pool.forEach((yabusConnection) => {
+      expect(yabusConnection.state).toEqual(initialState);
     });
 
     pool[8].update(updatesFoo);
@@ -233,8 +233,8 @@ describe("yabus instances pool", () => {
     await delay();
 
     const fooState = { ...initialState, ...updatesFoo };
-    pool.forEach((iobusConnection) => {
-      expect(iobusConnection.state).toEqual(fooState);
+    pool.forEach((yabusConnection) => {
+      expect(yabusConnection.state).toEqual(fooState);
     });
 
     const disconnectIndex = 7;
@@ -244,11 +244,11 @@ describe("yabus instances pool", () => {
     await delay();
 
     const barState = { ...fooState, ...updatesBar };
-    pool.forEach((iobusConnection, index) => {
+    pool.forEach((yabusConnection, index) => {
       if (index !== disconnectIndex) {
-        expect(iobusConnection.state).toEqual(barState);
+        expect(yabusConnection.state).toEqual(barState);
       } else {
-        expect(iobusConnection.state).toEqual(fooState);
+        expect(yabusConnection.state).toEqual(fooState);
       }
       expect(poolOptions[index].onError).not.toBeCalled();
     });
